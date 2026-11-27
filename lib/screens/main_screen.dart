@@ -1,6 +1,6 @@
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 
-import '../theme/app_theme.dart';
 import 'collection_screen.dart';
 import 'explore_screen.dart';
 import 'profile_screen.dart';
@@ -13,21 +13,27 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _index = 0;
-  final _pages = const [ExploreScreen(), CollectionScreen(), ProfileScreen()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _index, children: _pages),
+      body: IndexedStack(
+        index: _index,
+        children: [
+          ExploreScreen(onProfileTap: () => setState(() => _index = 2)),
+          const CollectionScreen(),
+          const ProfileScreen(),
+        ],
+      ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: AppTheme.surface,
-          border: Border(top: BorderSide(color: AppTheme.border, width: 1)),
+          color: Color(0xFFFCFFFD),
+          border: Border(top: BorderSide(color: Color(0xFFD8F4EA), width: 1)),
         ),
         child: SafeArea(
           top: false,
           child: SizedBox(
-            height: 64,
+            height: 72,
             child: Row(
               children: [
                 _buildNavItem(
@@ -42,12 +48,7 @@ class _MainScreenState extends State<MainScreen> {
                   Icons.bookmark,
                   'Koleksi',
                 ),
-                _buildNavItem(
-                  2,
-                  Icons.person_outline,
-                  Icons.person,
-                  'Profil',
-                ),
+                _buildNavItem(2, Icons.person_outline, Icons.person, 'Profil'),
               ],
             ),
           ),
@@ -66,39 +67,40 @@ class _MainScreenState extends State<MainScreen> {
     return Expanded(
       child: InkWell(
         onTap: () => setState(() => _index = index),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            if (isSelected)
-              Positioned(
-                top: 0,
-                left: 24,
-                right: 24,
-                child: Container(
-                  height: 2.5,
-                  color: AppTheme.accent,
-                ),
-              ),
-            Column(
+        borderRadius: BorderRadius.circular(32),
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: isSelected ? 88 : 72,
+            height: 58,
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0xFFBCEDDE) : Colors.transparent,
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
                   isSelected ? activeIcon : icon,
-                  color: isSelected ? AppTheme.accent : AppTheme.inkMuted,
+                  color: isSelected
+                      ? const Color(0xFF3A665C)
+                      : const Color(0xFF51461B),
                   size: 22,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? AppTheme.accent : AppTheme.inkMuted,
+                    fontWeight: FontWeight.w700,
+                    color: isSelected
+                        ? const Color(0xFF3A665C)
+                        : const Color(0xFF51461B),
                   ),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

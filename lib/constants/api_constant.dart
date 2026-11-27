@@ -1,6 +1,6 @@
 class ApiConstant {
   // Karena kita jalan di Chrome, kita pakai localhost (bukan 10.0.2.2)
-  static const String baseUrlLaravel = "http://192.168.97.3:8000/api";
+  static const String baseUrlLaravel = "http://10.10.11.237:8000/api";
   static const String publicApiUrl = "https://date.nager.at/api/v3";
 
   // Auth

@@ -29,22 +29,54 @@ class TripTypeService {
     throw Exception('Gagal load kategori');
   }
 
-  static Future<void> create(String name) async {
+  static Future<TripTypeModel> create(String name) async {
     final res = await http.post(
       Uri.parse(ApiConstant.tripTypes),
       headers: await _headers(),
       body: jsonEncode({'name': name}),
     );
-    if (res.statusCode != 201) throw Exception('Gagal tambah kategori');
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      if (res.body.isNotEmpty) {
+        final decoded = jsonDecode(res.body);
+        final data =
+            decoded is Map<String, dynamic> &&
+                decoded['data'] is Map<String, dynamic>
+            ? decoded['data'] as Map<String, dynamic>
+            : decoded is Map<String, dynamic>
+            ? decoded
+            : <String, dynamic>{};
+        if (data.isNotEmpty) {
+          return TripTypeModel.fromJson(data);
+        }
+      }
+      return TripTypeModel(id: 0, name: name);
+    }
+    throw Exception('Gagal tambah kategori');
   }
 
-  static Future<void> update(int id, String name) async {
+  static Future<TripTypeModel> update(int id, String name) async {
     final res = await http.put(
       Uri.parse(ApiConstant.tripTypeById(id)),
       headers: await _headers(),
       body: jsonEncode({'name': name}),
     );
-    if (res.statusCode != 200) throw Exception('Gagal update kategori');
+    if (res.statusCode == 200) {
+      if (res.body.isNotEmpty) {
+        final decoded = jsonDecode(res.body);
+        final data =
+            decoded is Map<String, dynamic> &&
+                decoded['data'] is Map<String, dynamic>
+            ? decoded['data'] as Map<String, dynamic>
+            : decoded is Map<String, dynamic>
+            ? decoded
+            : <String, dynamic>{};
+        if (data.isNotEmpty) {
+          return TripTypeModel.fromJson(data);
+        }
+      }
+      return TripTypeModel(id: id, name: name);
+    }
+    throw Exception('Gagal update kategori');
   }
 
   static Future<void> delete(int id) async {
